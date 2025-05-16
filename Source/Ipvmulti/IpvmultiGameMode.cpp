@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "IpvmultiGameMode.h"
-#include "IpvmultiCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AIpvmultiGameMode::AIpvmultiGameMode()
