@@ -44,6 +44,8 @@ class AIpvmultiCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
 public:
 	AIpvmultiCharacter();
 	/** Property replication */
@@ -85,6 +87,7 @@ protected:
 	void OnRep_CurrentHealth();
 protected:
 	/** Response to health being updated. Called on the server immediately after modification, and on clients in response to a RepNotify*/
+	UFUNCTION(BlueprintNativeEvent, Category = "Health")
 	void OnHealthUpdate();
 public:
 	/** Getter for Max Health.*/
