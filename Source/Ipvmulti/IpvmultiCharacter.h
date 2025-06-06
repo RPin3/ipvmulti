@@ -130,6 +130,22 @@ protected:
 
 	/** A timer handle used for providing the fire rate delay in-between spawns.*/
 	FTimerHandle FiringTimer;
+	/** Ammo variable replicated with OnRep */
+	UPROPERTY(ReplicatedUsing = OnRep_Ammo)
+	int Ammo;
+	UPROPERTY(EditDefaultsOnly, Category = "Ammo")
+	int MaxAmmo = 5;
+	UFUNCTION()
+	void OnRep_Ammo();
+public:
+	void RefillAmmo();
+	UFUNCTION(BlueprintPure, Category = "Ammo")
+	FORCEINLINE int GetAmmo() const { return Ammo; }
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Ammo")
+	void OnAmmoUpdate();
+
+	virtual void OnAmmoUpdate_Implementation();
 };
 
 

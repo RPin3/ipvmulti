@@ -64,6 +64,11 @@ AIpvmultiCharacter::AIpvmultiCharacter()
 	//Initialize fire rate
 	FireRate = 0.25f;
 	bIsFiringWeapon = false;
+
+	if (HasAuthority())
+	{
+		Ammo = MaxAmmo;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -147,6 +152,8 @@ void AIpvmultiCharacter::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& 
 
 	//Replicate current health.
 	DOREPLIFETIME(AIpvmultiCharacter, CurrentHealth);
+	DOREPLIFETIME(AIpvmultiCharacter, Ammo);
+
 }
 void AIpvmultiCharacter::OnHealthUpdate_Implementation()
 {
@@ -198,16 +205,40 @@ void AIpvmultiCharacter::StartFire()
 {
 	if (!bIsFiringWeapon)
 	{
-		bIsFiringWeapon = true;
-		UWorld* World = GetWorld();
-		World->GetTimerManager().SetTimer(FiringTimer, this, &AIpvmultiCharacter::StopFire, FireRate, false);
-		HandleFire();
+		if (Ammo > 0)
+		{
+			bIsFiringWeapon = true;
+			UWorld* World = GetWorld();
+			World->GetTimerManager().SetTimer(FiringTimer, this, &AIpvmultiCharacter::StopFire, FireRate, false);
+			HandleFire();
+			OnRep_Ammo();
+
+		}
+
 	}
 }
 
 void AIpvmultiCharacter::StopFire()
 {
 	bIsFiringWeapon = false;
+}
+
+void AIpvmultiCharacter::OnRep_Ammo()
+{
+	UE_LOG(LogTemp, Log, TEXT("Ammo replicated: %d"), Ammo);
+	OnAmmoUpdate();
+}
+
+void AIpvmultiCharacter::RefillAmmo()
+{
+	if (!HasAuthority()) return;
+
+	Ammo = MaxAmmo;
+	OnRep_Ammo();
+}
+
+void AIpvmultiCharacter::OnAmmoUpdate_Implementation()
+{
 }
 
 void AIpvmultiCharacter::HandleFire_Implementation()
@@ -220,4 +251,6 @@ void AIpvmultiCharacter::HandleFire_Implementation()
 	spawnParameters.Owner = this;
 
 	AThirdPersonMPProjectile* spawnedProjectile = GetWorld()->SpawnActor<AThirdPersonMPProjectile>(spawnLocation, spawnRotation, spawnParameters);
+	Ammo--;
+
 }
