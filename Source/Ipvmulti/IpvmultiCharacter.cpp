@@ -13,6 +13,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Engine/Engine.h"
 #include "ThirdPersonMPProjectile.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -241,6 +242,27 @@ void AIpvmultiCharacter::OnAmmoUpdate_Implementation()
 {
 }
 
+void AIpvmultiCharacter::OpenLobby()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+	World->ServerTravel("/Game/ThirdPerson/Maps/ExamMap?listen");
+}
+
+void AIpvmultiCharacter::CallOpenLevel(const FString& IPAdress)
+{
+	UGameplayStatics::OpenLevel(this, *IPAdress);
+}
+
+void AIpvmultiCharacter::CallClientTravel(const FString& IPAdress)
+{
+	APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
+	if (PlayerController)
+	{
+		PlayerController->ClientTravel(IPAdress,TRAVEL_Absolute);
+	}
+}
+
 void AIpvmultiCharacter::HandleFire_Implementation()
 {
 	FVector spawnLocation = GetActorLocation() + ( GetActorRotation().Vector()  * 100.0f ) + (GetActorUpVector() * 50.0f);
@@ -254,3 +276,4 @@ void AIpvmultiCharacter::HandleFire_Implementation()
 	Ammo--;
 
 }
+

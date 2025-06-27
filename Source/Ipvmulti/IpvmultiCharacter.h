@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "Logging/LogMacros.h"
 #include "IpvmultiCharacter.generated.h"
 
@@ -32,7 +33,7 @@ class AIpvmultiCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
+	/** JumpInput Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
@@ -146,6 +147,14 @@ public:
 	void OnAmmoUpdate();
 
 	virtual void OnAmmoUpdate_Implementation();
-};
 
+	UFUNCTION(BlueprintCallable)
+	void OpenLobby();
+
+	UFUNCTION(BlueprintCallable)
+	void CallOpenLevel(const FString& IPAdress);
+
+	UFUNCTION(BlueprintCallable)
+	void CallClientTravel(const FString& IPAdress);
+};
 
